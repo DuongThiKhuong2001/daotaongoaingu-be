@@ -92,7 +92,11 @@ public class DangKyThiController {
             // Nếu ngày hiện tại nằm ngoài vòng 2 tháng trước ngày thi
             return ResponseEntity.ok(new MessageResponse("chuatoihan"));
         }
-        if (ngayHienTai.after(ngayThi)) {
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(ngayThi);
+        cal2.add(Calendar.MONTH, -1);
+        Date ngayKetThucDangKy = cal2.getTime();
+        if (ngayHienTai.after(ngayKetThucDangKy)) {
             // Nếu ngày hiện tại nằm ngoài vòng 2 tháng trước ngày thi
             return ResponseEntity.ok(new MessageResponse("quahan"));
         }
