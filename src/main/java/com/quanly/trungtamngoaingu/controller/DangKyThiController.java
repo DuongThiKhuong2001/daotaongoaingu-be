@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -91,7 +92,10 @@ public class DangKyThiController {
             // Nếu ngày hiện tại nằm ngoài vòng 2 tháng trước ngày thi
             return ResponseEntity.ok(new MessageResponse("chuatoihan"));
         }
-
+        if (ngayHienTai.after(ngayThi)) {
+            // Nếu ngày hiện tại nằm ngoài vòng 2 tháng trước ngày thi
+            return ResponseEntity.ok(new MessageResponse("quahan"));
+        }
         Long dem = dangKyThiRepository.countByMaKyThi(kyThi.get().getMaKyThi());
         if(dem>=kyThi.get().getSoLuongDuocDangKy()){
             return new ResponseEntity<>(new MessageResponse("full"), HttpStatus.OK);
@@ -170,13 +174,16 @@ public class DangKyThiController {
     }
 
 
-    @DeleteMapping("/huy/{maDangKyThi}")
-    public ResponseEntity<?> xoaDangKyThi(@PathVariable Long maDangKyThi) {
+    @DeleteMapping("/huy/{maKyThi}/{ten}")
+    public ResponseEntity<?> xoaDangKyThi(@PathVariable Long maKyThi,
+                                          @PathVariable String ten) {
         try {
-            if (!dangKyThiRepository.existsById(maDangKyThi)) {
+
+            DangKyThi dangKyThi = dangKyThiRepository.findByHocVien_TaiKhoan_TenDangNhapAndKyThi_MaKyThi(ten, maKyThi);
+            if (dangKyThi == null) {
                 return new ResponseEntity<>(new MessageResponse("Đăng ký thi không tồn tại"), HttpStatus.NOT_FOUND);
             }
-            dangKyThiRepository.deleteById(maDangKyThi);
+            dangKyThiRepository.deleteById(dangKyThi.getMaDangKyThi());
             return ResponseEntity.ok(new MessageResponse("Huy đăng ký thi thành công"));
         } catch (Exception e) {
             return new ResponseEntity<>(new MessageResponse("cant-delete"), HttpStatus.BAD_REQUEST);
@@ -207,7 +214,8 @@ public class DangKyThiController {
     }
     @GetMapping("/ky-thi-con-han")
     public ResponseEntity<?> layDangKyTheoKyThiConHan() {
-        List<DangKyThi> dangKyThiList = dangKyThiRepository.findByKyThi_HanDangKyAndTrangThaiDangKyThiOrTrangThaiDangKyThi("Con_Han", DangKyThi.TrangThaiDangKyThi.Da_Duyet, DangKyThi.TrangThaiDangKyThi.Da_Sap_Lich);
+        //Sort sort = Sort.by(Sort.Direction.DESC, "ngayDangKy");
+        List<DangKyThi> dangKyThiList = dangKyThiRepository.findDangKyThiDaDuyetVaDaSapLich(DangKyThi.TrangThaiDangKyThi.Da_Duyet, DangKyThi.TrangThaiDangKyThi.Da_Sap_Lich);
         return ResponseEntity.ok(dangKyThiList);
     }
     @PostMapping("/kiem-tra")

@@ -15,6 +15,8 @@ import java.util.List;
 @Repository
 public interface DangKyThiRepository extends JpaRepository<DangKyThi, Long> {
     List<DangKyThi> findAll(Sort sort);
+    @Query("SELECT dkt FROM DangKyThi dkt WHERE dkt.trangThaiDangKyThi IN (:trangThai1, :trangThai2) ORDER BY dkt.ngayDangKy DESC")
+    List<DangKyThi> findDangKyThiDaDuyetVaDaSapLich(@Param("trangThai1") DangKyThi.TrangThaiDangKyThi trangThai1, @Param("trangThai2") DangKyThi.TrangThaiDangKyThi trangThai2);
     List<DangKyThi> findByMaDangKyThiIn(List<Long> maDangKyThiIds);
     List<DangKyThi> findByHocVien_TaiKhoan(TaiKhoan taiKhoan);
     @Query("SELECT d FROM DangKyThi d WHERE d.kyThi.hanDangKy = :han AND (d.trangThaiDangKyThi = :trangThaiDangKyThi1 OR d.trangThaiDangKyThi = :trangThaiDangKyThi2) ORDER BY d.ngayDangKy DESC")
@@ -28,6 +30,7 @@ public interface DangKyThiRepository extends JpaRepository<DangKyThi, Long> {
     List<DangKyThi> findByHocVien(HocVien hocVien, Sort sort);
     boolean existsByHocVienAndKyThi(HocVien hocVien, KyThi kyThi);
     DangKyThi findByHocVienAndKyThi(HocVien hocVien, KyThi kyThi);
+    DangKyThi findByHocVien_TaiKhoan_TenDangNhapAndKyThi_MaKyThi(String hocVien, Long kyThi);
     @Query("SELECT COUNT(d) FROM DangKyThi d WHERE d.kyThi.maKyThi = :maKyThi")
     Long countByMaKyThi(@Param("maKyThi") Long maKyThi);
     Long countByLichThi(LichThi lichThi);
