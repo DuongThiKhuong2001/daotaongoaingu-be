@@ -187,7 +187,6 @@ public class DangKyKhoaHocController {
     public ResponseEntity<?> xoaDangKyKhoaHocByTenDangNhapVaMaKhoaHoc(@PathVariable Long maKhoaHoc,
                                                                       @RequestParam String tenDangNhap) {
         DangKyKhoaHoc dangKyKhoaHoc = dangKyKhoaHocRepository.findByHocVien_TaiKhoan_TenDangNhapAndKhoaHoc_MaKhoaHoc(tenDangNhap, maKhoaHoc);
-//
         if (dangKyKhoaHoc == null) {
             return new ResponseEntity<>(new MessageResponse("Đăng ký khóa học không tồn tại"), HttpStatus.NOT_FOUND);
         }
