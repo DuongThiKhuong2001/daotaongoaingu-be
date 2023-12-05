@@ -78,7 +78,6 @@ public class TrungtamngoainguApplication implements CommandLineRunner {
             List<String> moTas = Arrays.asList(
                     "Quản lý khóa học",
                     "Quản lý kỳ thi",
-                    "Phân công gác thi",
                     "Quản lý đăng ký thi",
                     "Quản lý đăng ký khóa học",
                     "Quản lý tài liệu"
